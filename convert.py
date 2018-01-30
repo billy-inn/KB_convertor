@@ -2,18 +2,21 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from optparse import OptionParser
 import time
 from tqdm import tqdm
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def get(endpoint):
     try:
         results = endpoint.query().convert()
     except Exception as e:
-        time.sleep(300)
         print(e)
+        time.sleep(300)
         results = get(endpoint)
     return results
 
 def convert(input_file, output_file):
-    endpoint = SPARQLWrapper("http://dbpedia.org/sqarql")
+    endpoint = SPARQLWrapper("http://dbpedia.org/sparql")
     endpoint.setReturnFormat(JSON)
     infile = open(input_file)
     outfile = open(output_file, "w")
