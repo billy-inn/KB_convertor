@@ -41,7 +41,7 @@ SELECT ?obj WHERE {
                 matched += 1
                 break
         cnt += 1
-    print("Matched Stats: %d/%d" % (cnt, matched))
+    print("Matched Stats: %d/%d" % (matched, cnt))
     return known
 
 def reconstruct(input_file, output_file, kb_file):
@@ -51,6 +51,10 @@ def reconstruct(input_file, output_file, kb_file):
     outfile = open(output_file, "w")
     for line in tqdm(infile.readlines()):
         e1, r, e2 = line.strip().split("\t")
+        if not e1.startswith("m."):
+            continue
+        if not e2.startswith("m."):
+            continue
         if (e1 in e) or (e2 in e):
             outfile.write(line)
     outfile.close()
