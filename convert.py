@@ -56,7 +56,7 @@ def reconstruct(input_file, output_file, kb_file):
         if not e2.startswith("m."):
             continue
         if (e1 in e) or (e2 in e):
-            outfile.write(line)
+            outfile.write("%s\t%s\t%s\n" % (r, e1, e2))
     outfile.close()
 
 def convert_corpus(corpus, output_corpus, known):
