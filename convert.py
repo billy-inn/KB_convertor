@@ -88,7 +88,7 @@ def main(options):
         reconstruct(config.E_DICT, config.OUTPUT_REL, config.FB)
     if options.corpus:
         known = convert_corpus(config.SEN, config.OUTPUT_SEN, config.E_DICT)
-        outfile = open(config.F_DICT, "w")
+        outfile = open(config.S_DICT, "w")
         for k in sorted(known.keys()):
             outfile.write("%s %s\n" % (k, known[k]))
         outfile.close()
