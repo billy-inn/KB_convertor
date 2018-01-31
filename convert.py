@@ -79,7 +79,10 @@ def parse_args(parser):
 
 def main(options):
     if options.entity:
-        known = convert(config.ENTITIES)
+        infile = open(config.ENTITIES)
+        eSet = set([line.strip() for line in infile.readlines()])
+        infile.close()
+        known = convert(eSet)
         outfile = open(config.E_DICT, "w")
         for k in sorted(known.keys()):
             outfile.write("%s %s\n" % (k, known[k]))
