@@ -47,16 +47,26 @@ SELECT ?obj WHERE {
 def reconstruct(input_file, output_file, kb_file):
     d = data_utils.load_dict_from_txt(input_file)
     e = set(d.values())
+    # linecount = data_utils.file_len(kb_file)
+    linecount = 435406270  # Freebase
     infile = open(kb_file)
     outfile = open(output_file, "w")
-    for line in tqdm(infile.readlines()):
-        e1, r, e2 = line.strip().split("\t")
+    for i in tqdm(range(linecount)):
+        e1, r, e2 = infile.readline().strip().split("\t")
         if not e1.startswith("m."):
             continue
         if not e2.startswith("m."):
             continue
         if (e1 in e) or (e2 in e):
+            e.add(e1)
+            e.add(e2)
+    infile.close()
+    infile = open(kb_file)
+    for i in tqdm(range(linecount)):
+        e1, r, e2 = infile.readline().strip().split("\t")
+        if (e1 in e) and (e2 in e):
             outfile.write("%s\t%s\t%s\n" % (r, e1, e2))
+    infile.close()
     outfile.close()
 
 def convert_corpus(corpus, output_corpus, known):

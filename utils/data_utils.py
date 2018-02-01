@@ -6,3 +6,9 @@ def load_dict_from_txt(path):
             a, b = line.strip().split()
             d[a] = b
     return d
+
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+        return i + 1
