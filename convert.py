@@ -61,13 +61,11 @@ def reconstruct(input_file, output_file, kb_file):
 
 def convert_corpus(corpus, output_corpus, known):
     sen = pd.read_csv(corpus, sep="\t", names=["h", "t", "s", "p"])
-    d = data_utils.load_dict_from_txt(known)
-    known = convert(set(list(sen.h) + list(sen.t)), d)
+    known = data_utils.load_dict_from_txt(known)
     sen.h = sen.h.map(known)
     sen.t = sen.t.map(known)
     sen.dropna(axis=0, how="any", inplace=True)
     sen.to_csv(output_corpus, sep="\t", header=False, index=False)
-    return known
 
 def parse_args(parser):
     parser.add_option("-e", dest="entity", default=False, action="store_true")
@@ -90,11 +88,7 @@ def main(options):
     if options.reconstruct:
         reconstruct(config.E_DICT, config.OUTPUT_REL, config.FB)
     if options.corpus:
-        known = convert_corpus(config.SEN, config.OUTPUT_SEN, config.E_DICT)
-        outfile = open(config.S_DICT, "w")
-        for k in sorted(known.keys()):
-            outfile.write("%s %s\n" % (k, known[k]))
-        outfile.close()
+        convert_corpus(config.SEN, config.OUTPUT_SEN, config.E_DICT)
 
 if __name__ == "__main__":
     parser = OptionParser()
