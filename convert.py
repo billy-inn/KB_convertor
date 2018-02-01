@@ -44,9 +44,10 @@ SELECT ?obj WHERE {
     print("Matched Stats: %d/%d" % (matched, cnt))
     return known
 
-def reconstruct(input_file, output_file, kb_file):
+def reconstruct(input_file, output_file, kb_file, count_file, threshold=20):
     d = data_utils.load_dict_from_txt(input_file)
-    e = set(d.values())
+    count_dict = data_utils.load_dict_from_txt(count_file)
+    e = set([v for v in d.values() if count_dict[v] >= threshold])
     # linecount = data_utils.file_len(kb_file)
     linecount = 435406270  # Freebase
     infile = open(kb_file)
@@ -58,8 +59,10 @@ def reconstruct(input_file, output_file, kb_file):
         if not e2.startswith("m."):
             continue
         if (e1 in e) or (e2 in e):
-            e.add(e1)
-            e.add(e2)
+            if count_dict[e1] >= threshold:
+                e.add(e1)
+            if count_dict[e2] >= threshold:
+                e.add(e2)
     infile.close()
     infile = open(kb_file)
     for i in tqdm(range(linecount)):
@@ -96,7 +99,7 @@ def main(options):
             outfile.write("%s %s\n" % (k, known[k]))
         outfile.close()
     if options.reconstruct:
-        reconstruct(config.E_DICT, config.OUTPUT_REL, config.FB)
+        reconstruct(config.E_DICT, config.OUTPUT_REL, config.FB, config.ENTITY_COUNT)
     if options.corpus:
         convert_corpus(config.SEN, config.OUTPUT_SEN, config.E_DICT)
 
