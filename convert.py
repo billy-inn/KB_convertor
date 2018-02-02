@@ -44,7 +44,7 @@ SELECT ?obj WHERE {
     print("Matched Stats: %d/%d" % (matched, cnt))
     return known
 
-def reconstruct(input_file, output_file, kb_file, count_file, threshold=20):
+def reconstruct(input_file, output_file, kb_file, count_file, threshold=30):
     d = data_utils.load_dict_from_txt(input_file)
     count_dict = data_utils.load_dict_from_txt(count_file)
     e = [v for v in d.values() if (v in count_dict) and (count_dict[v] >= threshold)]
@@ -73,9 +73,11 @@ def reconstruct(input_file, output_file, kb_file, count_file, threshold=20):
     infile.close()
     outfile.close()
 
-def convert_corpus(corpus, output_corpus, known):
+def convert_corpus(corpus, output_corpus, known, count_file, threshold=30):
     sen = pd.read_csv(corpus, sep="\t", names=["h", "t", "s", "p"])
-    known = data_utils.load_dict_from_txt(known)
+    count_dict = data_utils.load_dict_from_txt(count_file)
+    d = data_utils.load_dict_from_txt(known)
+    known = {k: d[k] for k in d.keys() if (d[k] in count_dict) and (count_dict[d[k]] >= threshold)}
     sen.h = sen.h.map(known)
     sen.t = sen.t.map(known)
     sen.dropna(axis=0, how="any", inplace=True)
@@ -102,7 +104,7 @@ def main(options):
     if options.reconstruct:
         reconstruct(config.E_DICT, config.OUTPUT_REL, config.FB, config.ENTITY_COUNT)
     if options.corpus:
-        convert_corpus(config.SEN, config.OUTPUT_SEN, config.E_DICT)
+        convert_corpus(config.SEN, config.OUTPUT_SEN, config.E_DICT, config.ENTITY_COUNT)
 
 if __name__ == "__main__":
     parser = OptionParser()
