@@ -4,7 +4,10 @@ def load_dict_from_txt(path):
     with open(path) as f:
         for line in f.readlines():
             a, b = line.strip().split()
-            d[a] = b
+            try:
+                d[a] = int(b)
+            except:
+                d[a] = b
     return d
 
 def file_len(fname):

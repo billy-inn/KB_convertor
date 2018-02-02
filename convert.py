@@ -47,7 +47,8 @@ SELECT ?obj WHERE {
 def reconstruct(input_file, output_file, kb_file, count_file, threshold=20):
     d = data_utils.load_dict_from_txt(input_file)
     count_dict = data_utils.load_dict_from_txt(count_file)
-    e = set([v for v in d.values() if count_dict[v] >= threshold])
+    e = [v for v in d.values() if (v in count_dict) and (count_dict[v] >= threshold)]
+    e = set(e)
     # linecount = data_utils.file_len(kb_file)
     linecount = 435406270  # Freebase
     infile = open(kb_file)
